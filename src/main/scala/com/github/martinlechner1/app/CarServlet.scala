@@ -2,7 +2,7 @@ package com.github.martinlechner1.app
 
 import org.scalatra._
 
-class CarServlet extends CarapiStack {
+class CarServlet extends CarapiStack with CorsSupport {
 
   get("/") {
     <html>
@@ -13,4 +13,7 @@ class CarServlet extends CarapiStack {
     </html>
   }
 
+  options("/*") {
+    response.setHeader("Access-Control-Allow-Headers", request.getHeader("Access-Control-Request-Headers"));
+  }
 }
