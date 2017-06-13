@@ -37,11 +37,15 @@ class AdvertServlet(implicit val swagger: Swagger) extends ScalatraServlet
       )
 
   post("/", operation(postAdvert)) {
-    val carAdvert = parsedBody.extract[CarAdvert]
-    val validation: Result = com.wix.accord.validate(carAdvert)
-    validation match {
-      case Success => Ok(carAdvert)
-      case Failure(e) => BadRequest(e)
+    val carAdvert = parsedBody.extractOpt[CarAdvert]
+    carAdvert match {
+      case Some(value) =>
+        val validation: Result = com.wix.accord.validate(value)
+        validation match {
+          case Success => Ok(value)
+          case Failure(e) => BadRequest(e)
+        }
+      case None => BadRequest("Malformed JSON")
     }
   }
 

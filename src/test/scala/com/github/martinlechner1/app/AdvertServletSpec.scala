@@ -28,10 +28,10 @@ class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers {
         status must_== 200
       }
     }
-    "fail with 500 on missing title" in {
+    "fail with 400 on missing title" in {
       val requestBody = """{"id": 1}"""
       post(servletPath, headers = jsonHeaders, body = requestBody) {
-        status must_== 500
+        status must_== 400
       }
     }
     "fail with 400 on empty title" in {
