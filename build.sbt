@@ -34,7 +34,8 @@ libraryDependencies ++= Seq(
   scalatraPackage %% "scalatra-json" % ScalatraVersion,
   "org.json4s"   %% "json4s-native" % "3.5.2",
   "org.json4s"   %% "json4s-jackson" % "3.5.2",
-  scalatraPackage %% "scalatra-swagger" % ScalatraVersion
+  scalatraPackage %% "scalatra-swagger" % ScalatraVersion,
+  "com.wix" %% "accord-core" % "0.6.1"
 )
 
 enablePlugins(JettyPlugin)
