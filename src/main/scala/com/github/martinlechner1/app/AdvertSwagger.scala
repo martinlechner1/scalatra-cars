@@ -14,4 +14,4 @@ object AdvertApiInfo extends ApiInfo(
   "MIT",
   "http://opensource.org/licenses/MIT")
 
-class AdvertSwagger extends Swagger(Swagger.SpecVersion, "1.0.0", AdvertApiInfo)
+class AdvertSwagger extends Swagger("2.0", "1.0.0", AdvertApiInfo)

@@ -8,7 +8,7 @@ import org.scalatra.json._
 import org.scalatra.swagger._
 
 class AdvertServlet(implicit val swagger: Swagger) extends ScalatraServlet
-  with CorsSupport with JacksonJsonSupport with SwaggerSupport {
+  with JacksonJsonSupport with SwaggerSupport {
 
   protected val applicationDescription = "The car advert api."
 

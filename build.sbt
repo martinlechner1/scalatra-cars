@@ -26,15 +26,15 @@ javaOptions ++= Seq(
 
 libraryDependencies ++= Seq(
   scalatraPackage %% "scalatra" % ScalatraVersion,
+  scalatraPackage %% "scalatra-json" % ScalatraVersion,
   scalatraPackage %% "scalatra-scalate" % ScalatraVersion,
   scalatraPackage %% "scalatra-specs2" % ScalatraVersion % "test",
+  scalatraPackage %% "scalatra-swagger" % ScalatraVersion,
   "ch.qos.logback" % "logback-classic" % "1.1.5" % "runtime",
   "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
-  scalatraPackage %% "scalatra-json" % ScalatraVersion,
   "org.json4s"   %% "json4s-native" % "3.5.2",
   "org.json4s"   %% "json4s-jackson" % "3.5.2",
-  scalatraPackage %% "scalatra-swagger" % ScalatraVersion,
   "com.wix" %% "accord-core" % "0.6.1"
 )
 
