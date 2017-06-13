@@ -5,7 +5,8 @@ import org.specs2.matcher.JsonMatchers
 
 class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers {
 
-  addServlet(classOf[AdvertServlet], "/*")
+  implicit val swagger = new AdvertSwagger
+  addServlet(new AdvertServlet, "/advert/*")
 
   "GET / on AdvertServlet" should {
     "return a list of CarAdverts" in {
