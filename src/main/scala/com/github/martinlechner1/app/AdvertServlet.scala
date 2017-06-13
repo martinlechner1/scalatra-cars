@@ -1,12 +1,13 @@
 package com.github.martinlechner1.app
 
 import com.github.martinlechner1.model.CarAdvert
-import org.scalatra._
 import org.json4s.{DefaultFormats, Formats}
+import org.scalatra._
 import org.scalatra.json._
 import org.scalatra.swagger._
 
-class AdvertServlet(implicit val swagger: Swagger) extends ScalatraServlet with CorsSupport with JacksonJsonSupport with SwaggerSupport {
+class AdvertServlet(implicit val swagger: Swagger) extends ScalatraServlet
+  with CorsSupport with JacksonJsonSupport with SwaggerSupport {
 
   protected val applicationDescription = "The car advert api."
 
