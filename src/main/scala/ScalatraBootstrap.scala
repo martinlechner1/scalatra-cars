@@ -2,11 +2,17 @@ import com.github.martinlechner1.app._
 import org.scalatra._
 import javax.servlet.ServletContext
 
+import com.github.martinlechner1.database.AdvertDAO
+import io.getquill.{MysqlAsyncContext, SnakeCase}
+
 class ScalatraBootstrap extends LifeCycle {
 
   implicit val swagger = new AdvertSwagger
+  implicit lazy val ctx = new MysqlAsyncContext[SnakeCase]("db.default")
+  implicit val advertDao = new AdvertDAO
 
   override def init(context: ServletContext) {
+
     /*
      * The following line is a quick fix to make swagger-ui work, see:
      * https://github.com/scalatra/scalatra-website-examples/issues/40 and

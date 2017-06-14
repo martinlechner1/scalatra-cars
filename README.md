@@ -2,6 +2,14 @@
 
 ## Build & Run ##
 
+## Setup Database
+
+Setup a Mysql Database, e.g. via docker. 
+
+Configure the connection in application.conf.
+ 
+Apply db.sql to the database.
+
 ```sh
 $ cd CarApi
 $ ./sbt
