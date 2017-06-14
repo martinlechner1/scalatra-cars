@@ -9,11 +9,9 @@ import org.scalatra.json._
 import org.scalatra.swagger._
 
 class AdvertServlet(implicit val swagger: Swagger, implicit val advertDAO: AdvertDAO) extends ScalatraServlet
-  with JacksonJsonSupport with SwaggerSupport with FutureSupport {
+  with JacksonJsonSupport with SwaggerSupport {
 
   protected val applicationDescription = "The car advert api."
-
-  protected implicit def executor = scala.concurrent.ExecutionContext.Implicits.global
 
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
@@ -30,6 +28,20 @@ class AdvertServlet(implicit val swagger: Swagger, implicit val advertDAO: Adver
 
   get("/", operation(getAdverts)) {
     advertDAO.getAll()
+  }
+
+  val getAdvert: SwaggerOperation =
+    (apiOperation[List[Advert]]("getAdvert")
+      summary "Show all car adverts"
+      parameters pathParam[Int]("id").description("Id of the car advert to get")
+      )
+
+  get("/:id", operation(getAdvert)) {
+    val id = params("id").toInt
+    advertDAO.get(id) match {
+      case Some(value) => Ok(value)
+      case None => NotFound("No car advert for given id: " + id)
+    }
   }
 
   val postAdvert: SwaggerOperation =
@@ -63,6 +75,31 @@ class AdvertServlet(implicit val swagger: Swagger, implicit val advertDAO: Adver
   delete("/:id", operation(deleteAdvert)) {
     val id = params("id").toInt
     advertDAO.delete(id)
+  }
+
+  val updateAdvert: SwaggerOperation =
+    (apiOperation[Advert]("updateAdvert")
+      summary "Update advert"
+      parameter pathParam[Int]("id").description("Id of the car advert to update")
+      parameter  bodyParam[Advert].description("The updated entity"))
+
+  put("/:id", operation(updateAdvert)) {
+    val id = params("id").toInt
+    val carAdvert = parsedBody.extractOpt[Advert]
+    carAdvert match {
+      case Some(value) =>
+        val validation: Result = com.wix.accord.validate(value)
+        validation match {
+          case Success =>
+            if (value.id == id) {
+              advertDAO.update(value)
+            } else {
+              BadRequest("Ids do not match")
+            }
+          case Failure(e) => BadRequest(e)
+        }
+      case None => BadRequest("Malformed JSON")
+    }
   }
 
   options("/*") {

@@ -1,14 +1,13 @@
 package com.github.martinlechner1.database
 
 import com.github.martinlechner1.model.Advert
-import io.getquill.{MysqlAsyncContext, SnakeCase}
+import io.getquill.{MysqlJdbcContext, SnakeCase}
 
-import scala.concurrent.{ExecutionContext, Future}
 
-class AdvertDAO(implicit val ctx: MysqlAsyncContext[SnakeCase]) {
+class AdvertDAO(implicit val ctx: MysqlJdbcContext[SnakeCase]) {
   import ctx._
 
-  def create(advert: Advert)(implicit ectx: ExecutionContext) {
+  def create(advert: Advert) {
     ctx.run(
       quote {
         query[Advert].insert(lift(advert))
@@ -16,22 +15,34 @@ class AdvertDAO(implicit val ctx: MysqlAsyncContext[SnakeCase]) {
     )
   }
 
-  def delete(id: Int)(implicit ectx: ExecutionContext): Future[Boolean] = {
+  def delete(id: Int) {
     val quotedQuery = quote {
       query[Advert].filter(_.id == lift(id)).delete
     }
-    ctx.run(quotedQuery).map {
-      case 0 => false
-      case 1 => true
-      case _ => false
-    }
+    ctx.run(quotedQuery)
   }
 
-  def getAll()(implicit ectx: ExecutionContext): Future[List[Advert]] = {
+  def update(advert: Advert) {
+    ctx.run(
+      quote {
+        query[Advert].filter(_.id == lift(advert.id)).update(lift(advert))
+      }
+    )
+  }
+
+  def getAll(): List[Advert] = {
     ctx.run(
       quote {
         query[Advert]
       }
     )
+  }
+
+  def get(id: Int): Option[Advert] = {
+    ctx.run(
+      quote {
+        query[Advert].filter(_.id == lift(id)).take(1)
+      }
+    ).headOption
   }
 }

@@ -3,12 +3,12 @@ import org.scalatra._
 import javax.servlet.ServletContext
 
 import com.github.martinlechner1.database.AdvertDAO
-import io.getquill.{MysqlAsyncContext, SnakeCase}
+import io.getquill.{MysqlJdbcContext, SnakeCase}
 
 class ScalatraBootstrap extends LifeCycle {
 
   implicit val swagger = new AdvertSwagger
-  implicit lazy val ctx = new MysqlAsyncContext[SnakeCase]("db.default")
+  implicit lazy val ctx = new MysqlJdbcContext[SnakeCase]("ctx")
   implicit val advertDao = new AdvertDAO
 
   override def init(context: ServletContext) {

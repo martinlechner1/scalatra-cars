@@ -37,9 +37,7 @@ libraryDependencies ++= Seq(
   "org.json4s"   %% "json4s-jackson" % "3.5.2",
   "com.wix" %% "accord-core" % "0.6.1",
   "mysql" % "mysql-connector-java" % "5.1.38",
-  "io.getquill" %% "quill-jdbc" % "1.2.1",
-  "io.getquill" %% "quill-async-mysql" % "1.2.1"
-
+  "io.getquill" %% "quill-jdbc" % "1.2.1"
 )
 
 enablePlugins(JettyPlugin)
