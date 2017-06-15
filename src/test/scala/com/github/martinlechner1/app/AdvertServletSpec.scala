@@ -1,7 +1,7 @@
 package com.github.martinlechner1.app
 
-import com.github.martinlechner1.database.AdvertDAO
-import com.github.martinlechner1.model.Advert
+import com.github.martinlechner1.database.{AdvertDAO, Id}
+import com.github.martinlechner1.model.{Advert, Diesel}
 import org.mockito.Mockito.reset
 import org.scalatra.test.specs2._
 import org.specs2.matcher.JsonMatchers
@@ -16,6 +16,7 @@ class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mocki
   implicit val swagger = new AdvertSwagger
   implicit val advertDAO = mock[AdvertDAO]
   val servletPath = "/advert"
+  val servletPathId = (id: Int) => servletPath + "/" + id
 
   addServlet(new AdvertServlet, servletPath + "/*")
 
@@ -23,26 +24,30 @@ class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mocki
     reset(advertDAO)
   }
 
+
+  private val NEW_AUDI = Advert(1, "Audi A4", Diesel, 10, true, Option.empty, Option.empty)
+
   "GET / on AdvertServlet" should {
     "return a list of CarAdverts" in {
-      advertDAO.getAll().returns(List(Advert(1, "Demo")))
+      advertDAO.getAll(Id).returns(List(NEW_AUDI))
       get(servletPath) {
-        response.body must /#(0) / ("id" -> 1) / ("title" -> "Demo")
+        response.body must /#(0) / ("id" -> 1)
+        response.body must /#(0) / ("title" -> "Audi A4")
       }
     }
   }
 
   "GET /:id on AdvertServlet" should {
     "return a CarAdvert" in {
-      advertDAO.get(===(1)).returns(Option(Advert(1, "Demo")))
-      get(servletPath + "/1") {
-        response.body must /("title" -> "Demo")
+      advertDAO.get(===(1)).returns(Option(NEW_AUDI))
+      get(servletPathId(1)) {
         response.body must /("id" -> 1)
+        response.body must /("title" -> "Audi A4")
       }
     }
     "return 404 if no matching car advert is found" in {
       advertDAO.get(===(1)).returns(Option.empty[Advert])
-      get(servletPath + "/1") {
+      get(servletPathId(1)) {
         status must_== 404
       }
     }
@@ -52,10 +57,11 @@ class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mocki
     val jsonHeaders = Map("Accept" -> "application/json", "Content-Type" -> "application/json")
 
     "accept correct data" in {
-      val requestBody = """{"id": 1, "title": "Audi A4"}"""
+      val requestBody = """{"id": 1, "title": "Audi A4", "fuel": "diesel", "price": 10, "new": true}"""
+      advertDAO.create(any[Advert]).returns(1)
       post(servletPath, headers = jsonHeaders, body = requestBody) {
         status must_== 200
-        there was one(advertDAO).create(Advert(1, "Audi A4"))
+        there was one(advertDAO).create(NEW_AUDI)
       }
     }
     "fail with 400 on missing title" in {
@@ -79,22 +85,23 @@ class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mocki
     val jsonHeaders = Map("Accept" -> "application/json", "Content-Type" -> "application/json")
 
     "accept correct data" in {
-      val requestBody = """{"id": 1, "title": "Audi A4"}"""
-      put(servletPath + "/1", headers = jsonHeaders, body = requestBody) {
+      val requestBody = """{"id": 1, "title": "Audi A4", "fuel": "diesel", "price": 10, "new": true}"""
+      advertDAO.update(any[Advert]).returns(1)
+      put(servletPathId(1), headers = jsonHeaders, body = requestBody) {
         status must_== 200
-        there was one(advertDAO).update(Advert(1, "Audi A4"))
+        there was one(advertDAO).update(NEW_AUDI)
       }
     }
     "fail with 400 on not matching id" in {
       val requestBody = """{"id": 1, "title": "Audi A4"}"""
-      put(servletPath + "/2", headers = jsonHeaders, body = requestBody) {
+      put(servletPathId(2), headers = jsonHeaders, body = requestBody) {
         status must_== 400
         there was no(advertDAO).update(any[Advert])
       }
     }
     "fail with 400 on missing title" in {
       val requestBody = """{"id": 1}"""
-      put(servletPath + "/1", headers = jsonHeaders, body = requestBody) {
+      put(servletPathId(1), headers = jsonHeaders, body = requestBody) {
         status must_== 400
         there was no(advertDAO).update(any[Advert])
 
@@ -102,15 +109,7 @@ class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mocki
     }
     "fail with 400 on empty title" in {
       val requestBody = """{"id": 1, "title": ""}"""
-      put(servletPath + "/1", headers = jsonHeaders, body = requestBody) {
-        status must_== 400
-        there was no(advertDAO).update(any[Advert])
-      }
-    }
-
-    "fail with 400 on empty title" in {
-      val requestBody = """{"id": 1, "title": ""}"""
-      post(servletPath, headers = jsonHeaders, body = requestBody) {
+      put(servletPathId(1), headers = jsonHeaders, body = requestBody) {
         status must_== 400
         there was no(advertDAO).update(any[Advert])
       }
@@ -119,9 +118,10 @@ class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mocki
 
   "DELETE / on AdvertServlet" should {
     "return call delete on dao" in {
-      delete(servletPath + "/1") {
+      val id = 1
+      delete(servletPathId(id)) {
         status must_== 200
-        there was one(advertDAO).delete(1)
+        there was one(advertDAO).delete(id)
       }
     }
   }
