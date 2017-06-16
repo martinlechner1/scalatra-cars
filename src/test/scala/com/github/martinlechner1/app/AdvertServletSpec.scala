@@ -6,11 +6,12 @@ import org.mockito.Mockito.reset
 import org.scalatra.test.specs2._
 import org.specs2.matcher.JsonMatchers
 import org.specs2.mock.Mockito
-import org.specs2.specification.process.RandomSequentialExecution
-import org.specs2.specification.{BeforeAll, BeforeEach}
+import org.specs2.specification.BeforeEach
 
 
-class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mockito with BeforeAll with BeforeEach with RandomSequentialExecution {
+class AdvertServletSpec extends MutableScalatraSpec with JsonMatchers with Mockito with BeforeEach  {
+
+  sequential
 
   implicit val formats = org.json4s.DefaultFormats
   implicit val swagger = new AdvertSwagger
