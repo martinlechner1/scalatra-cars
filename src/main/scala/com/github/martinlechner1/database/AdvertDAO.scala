@@ -8,7 +8,7 @@ import io.getquill.{MysqlJdbcContext, SnakeCase}
 
 
 class AdvertDAO(implicit val ctx: MysqlJdbcContext[SnakeCase]) {
-  import ctx._
+  import ctx._  // scalastyle:ignore
 
   // Tell quill how to handle Instants
   implicit val encodeInstant = MappedEncoding[Instant, Date](time => Date.from(time))

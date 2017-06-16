@@ -1,4 +1,4 @@
-# CarAdvertApi
+# Scalatra-cars
 
 Implementation of a sample RESTful api using Scalatra, Quill, Mysql and Docker. 
 
@@ -11,9 +11,10 @@ $ docker-compose up
 
 ## Manual Setup
 
+* Scala (2.11.11) and sbt (0.13.15) should be installed
 * Setup a Mysql Database, e.g. via docker. 
 * Create a user 'carapi'.
-* Apply db.sql to the database.
+* Apply db.sql to the database. (quill has no dbmigrations...)
 * Configure the connection in application.conf or use ENV vars:
   * DB_HOST
   * DB_PORT

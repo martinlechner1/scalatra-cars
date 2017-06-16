@@ -7,7 +7,7 @@ import org.scalatra.servlet.ScalatraListener
 
 object JettyLauncher {
   def main(args: Array[String]) {
-    val port = if(System.getenv("PORT") != null) System.getenv("PORT").toInt else 8080
+    val port = if(System.getenv("PORT") != null) System.getenv("PORT").toInt else 8080 // scalastyle:ignore
 
     val server = new Server(port)
     val context = new WebAppContext()
