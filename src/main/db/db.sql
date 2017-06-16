@@ -1,4 +1,5 @@
-CREATE DATABASE `carapi` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE IF NOT EXISTS `carapi` /*!40100 DEFAULT CHARACTER SET utf8 */;
+GRANT ALL ON carapi.* TO 'carapi_user'@'%';
 
 USE carapi;
 
